@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mattering: l'importanza di contare sul luogo di lavoro</title>
+<style>
+:root{--blue:#002855;--green:#cce97f;--grey:#eef1f8;--white:#ffffff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--grey);color:var(--blue);line-height:1.5}
+header{position:sticky;top:0;z-index:10;background:var(--blue);color:var(--white);padding:14px 22px;box-shadow:0 2px 10px rgba(0,40,85,.18)}
+.header-inner{max-width:980px;margin:auto;display:flex;align-items:center;gap:18px}
+.brand{font-weight:900;font-size:28px;letter-spacing:2px}.head-title{font-weight:700;font-size:16px}
+main{max-width:980px;margin:auto;padding:28px 18px}
+.card{background:var(--white);border:2px solid var(--blue);border-radius:18px;padding:32px;min-height:68vh;display:flex;flex-direction:column;justify-content:center;box-shadow:0 8px 30px rgba(0,40,85,.08)}
+.hidden{display:none!important}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.12;margin:0 0 18px}h2{font-size:clamp(22px,4vw,32px);margin:0 0 15px}h3{margin:20px 0 8px}
+.lead{font-size:18px;max-width:760px}.small{font-size:14px}.source{margin-top:22px;font-size:13px}
+button{font:inherit;font-weight:700;border-radius:12px;border:2px solid var(--blue);padding:12px 20px;cursor:pointer;background:var(--green);color:var(--blue);transition:.15s}
+button:hover,button:focus{transform:translateY(-1px);outline:3px solid var(--green);outline-offset:2px}.secondary{background:var(--white)}
+.actions{display:flex;gap:12px;justify-content:space-between;margin-top:24px;flex-wrap:wrap}
+.progress-wrap{margin-bottom:24px}.progress-meta{display:flex;justify-content:space-between;font-weight:700;margin-bottom:8px}.progress{height:12px;background:var(--grey);border:1px solid var(--blue);border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:var(--green);transition:width .25s}
+.dimension-label{display:inline-block;background:var(--grey);border:1px solid var(--blue);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;margin-bottom:16px}
+.question{font-size:clamp(20px,3vw,27px);font-weight:700;margin-bottom:22px}
+.options{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.option{background:var(--white);min-height:76px;padding:10px}.option.selected{background:var(--green)}
+.scale-help{text-align:center;margin-top:12px;font-size:13px}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.score-box{background:var(--grey);border:1px solid var(--blue);border-radius:14px;padding:16px;margin-bottom:12px}.score-row{display:flex;justify-content:space-between;gap:12px;font-weight:700}.bar{height:13px;background:var(--white);border:1px solid var(--blue);border-radius:99px;overflow:hidden;margin-top:8px}.bar span{display:block;height:100%;background:var(--green)}
+canvas{display:block;max-width:100%;height:auto;margin:0 auto;background:var(--white)}
+.callout{background:var(--green);border:2px solid var(--blue);border-radius:14px;padding:16px;margin:18px 0}
+textarea{width:100%;min-height:110px;border:2px solid var(--blue);border-radius:12px;padding:12px;font:inherit;color:var(--blue);background:var(--white)}
+.reflection{margin-top:26px}.total{font-size:22px;font-weight:900}
+@media(max-width:700px){header{position:static}.header-inner{align-items:flex-start;flex-direction:column;gap:2px}.brand{font-size:24px}.head-title{font-size:13px}main{padding:12px}.card{padding:20px 14px;min-height:82vh;border-radius:14px}.options{grid-template-columns:1fr}.option{width:100%;min-height:52px}.results-grid{grid-template-columns:1fr}.actions{flex-direction:column}.actions button{width:100%}}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><div class="brand">PRAXI</div><div class="head-title">Mattering: l'importanza di “contare” sul luogo di lavoro</div></div></header>
+<main>
+<section id="intro" class="card">
+  <h1>Mattering</h1>
+  <h2>L'importanza di “contare” sul luogo di lavoro</h2>
+  <p class="lead">Questo questionario ti aiuta a riflettere su quanto, nella tua condotta quotidiana, contribuisci a una cultura in cui le persone si sentono viste, valorizzate e necessarie.</p>
+  <p>Per ciascuna affermazione indica la frequenza del comportamento descritto, da <strong>Mai</strong> a <strong>Sempre</strong>. Non ci sono risposte giuste o sbagliate: rispondi pensando alle tue pratiche abituali.</p>
+  <div class="actions"><span></span><button id="startBtn">Inizia</button></div>
+  <p class="source">Fonte: Zach Mercurio (2025), <em>L'importanza di “contare” sul luogo di lavoro</em>, Harvard Business Review.</p>
+</section>
+
+<section id="quiz" class="card hidden" aria-live="polite">
+  <div class="progress-wrap"><div class="progress-meta"><span id="counter">Domanda 1 di 15</span><span id="pct">7%</span></div><div class="progress"><span id="progressBar"></span></div></div>
+  <div id="dimension" class="dimension-label"></div>
+  <div id="question" class="question"></div>
+  <div id="options" class="options"></div>
+  <div class="scale-help">Selezionando una risposta passerai automaticamente alla domanda successiva.</div>
+  <div class="actions"><button id="backBtn" class="secondary">Indietro</button><button id="nextBtn">Avanti</button></div>
+</section>
+
+<section id="results" class="card hidden">
+  <h1>Il tuo profilo di Mattering</h1>
+  <p class="lead">Il risultato offre una fotografia orientativa delle tue pratiche attuali. Usalo come base di riflessione personale o di confronto con il Trainer.</p>
+  <div class="results-grid">
+    <div><div id="scoreCards"></div><div id="totalScore" class="total"></div></div>
+    <div><canvas id="radar" width="600" height="420" aria-label="Grafico radar dei risultati"></canvas></div>
+  </div>
+  <div id="insight" class="callout"></div>
+  <div class="actions"><button id="restartBtn" class="secondary">Ricomincia</button><button id="downloadBtn">Scarica immagine del risultato</button></div>
+  <p class="source">Fonte: Zach Mercurio (2025), <em>L'importanza di “contare” sul luogo di lavoro</em>, Harvard Business Review.</p>
+</section>
+</main>
+<script>
+const questions=[
+{d:'Notare gli altri',t:'Chiedo e ricordo i particolari della vita degli altri, come i nomi dei membri della loro famiglia e dei loro amici, valori, interessi, obiettivi e aspirazioni personali.'},
+{d:'Notare gli altri',t:'Ricordo e mi informo sui particolari della vita personale e lavorativa degli altri durante le conversazioni di routine.'},
+{d:'Notare gli altri',t:'Chiedo le opinioni degli altri, ascolto quello che dicono, esplicito il mio apprezzamento per il loro punto di vista e in seguito mi assicuro che si sentano ascoltati.'},
+{d:'Notare gli altri',t:'Faccio caso all’umore degli altri e, quando avverto che qualcuno è in difficoltà, cerco di capire e offrire aiuto.'},
+{d:'Notare gli altri',t:'Sono attento al livello di energia e alle emozioni delle persone.'},
+{d:'Riconoscere gli altri',t:'Cito i doni specifici di ognuno, i suoi punti di forza, ciò che lo muove, il suo punto di vista e l’esperienza che ha.'},
+{d:'Riconoscere gli altri',t:'Mostro alle persone come loro stesse e il loro lavoro hanno un impatto sugli altri, dentro e fuori l’organizzazione.'},
+{d:'Riconoscere gli altri',t:'Quando assegno un compito, ne spiego le ragioni e i modi in cui farà la differenza.'},
+{d:'Riconoscere gli altri',t:'Faccio una strada più lunga pur di fornire agli altri l’opportunità di usare e sviluppare i loro doni.'},
+{d:'Riconoscere gli altri',t:'Esprimo verbalmente gratitudine agli altri con regolarità.'},
+{d:'Aver bisogno degli altri',t:'Dico agli altri quanto conto su di loro.'},
+{d:'Aver bisogno degli altri',t:'Quando una persona ritorna dopo un’assenza, dico che mi è mancata.'},
+{d:'Aver bisogno degli altri',t:'Ricordo alle persone quanto io stesso e l’organizzazione abbiamo bisogno di loro e del loro lavoro.'},
+{d:'Aver bisogno degli altri',t:'Chiedo aiuto agli altri.'},
+{d:'Aver bisogno degli altri',t:'Dico alle persone che le cose vanno meglio quando ci sono.'}
+];
+const scale=[['Mai',1],['Raramente',2],['Talvolta',3],['Spesso',4],['Sempre',5]];
+let current=0,answers=Array(questions.length).fill(null),advanceTimer;
+const $=id=>document.getElementById(id);
+function show(id){['intro','quiz','results'].forEach(x=>$(x).classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+function render(){
+ const q=questions[current],pct=Math.round((current+1)/questions.length*100);
+ $('counter').textContent=`Domanda ${current+1} di ${questions.length}`;$('pct').textContent=pct+'%';$('progressBar').style.width=pct+'%';
+ $('dimension').textContent=q.d;$('question').textContent=q.t;$('options').innerHTML='';
+ scale.forEach(([label,value])=>{const b=document.createElement('button');b.className='option'+(answers[current]===value?' selected':'');b.innerHTML=`<strong>${label}</strong><br><span class="small">${value} su 5</span>`;b.onclick=()=>select(value);$('options').appendChild(b)});
+ $('backBtn').disabled=current===0;$('nextBtn').textContent=current===questions.length-1?'Vedi risultati':'Avanti';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function select(v){answers[current]=v;render();clearTimeout(advanceTimer);advanceTimer=setTimeout(()=>{if(current<questions.length-1){current++;render()}else finish()},280)}
+function next(){if(answers[current]===null){alert('Seleziona una risposta prima di continuare.');return}if(current<questions.length-1){current++;render()}else finish()}
+function scores(){const out={};questions.forEach((q,i)=>out[q.d]=(out[q.d]||0)+answers[i]);return out}
+function finish(){if(answers.some(v=>v===null)){alert('Completa tutte le domande.');return}show('results');const s=scores(),entries=Object.entries(s),total=answers.reduce((a,b)=>a+b,0);$('scoreCards').innerHTML='';entries.forEach(([name,val])=>{$('scoreCards').innerHTML+=`<div class="score-box"><div class="score-row"><span>${name}</span><span>${val}/25</span></div><div class="bar"><span style="width:${val/25*100}%"></span></div></div>`});$('totalScore').textContent=`Punteggio complessivo: ${total}/75`;
+ const min=Math.min(...entries.map(x=>x[1])),max=Math.max(...entries.map(x=>x[1]));const lows=entries.filter(x=>x[1]===min).map(x=>x[0]).join(', '),highs=entries.filter(x=>x[1]===max).map(x=>x[0]).join(', ');
+ $('insight').innerHTML=`<strong>Area da sviluppare:</strong> ${lows} (${min}/25).<br><strong>Area più consolidata:</strong> ${highs} (${max}/25).<br><span class="small">Punteggi vicini indicano un profilo equilibrato; le differenze suggeriscono dove concentrare una pratica deliberata.</span>`;drawRadar(s)}
+function drawRadar(s,canvas=$('radar')){const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,cx=w/2,cy=h/2+10,r=Math.min(w,h)*.28,n=3,labels=Object.keys(s),vals=Object.values(s);ctx.clearRect(0,0,w,h);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#002855';ctx.fillStyle='#002855';ctx.lineWidth=1;ctx.font='10px Arial';ctx.textAlign='center';
+ for(let level=1;level<=5;level++){ctx.beginPath();for(let i=0;i<n;i++){let a=-Math.PI/2+i*2*Math.PI/n,rr=r*level/5,x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath();ctx.stroke()}
+ for(let i=0;i<n;i++){let a=-Math.PI/2+i*2*Math.PI/n,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.stroke();let lx=cx+Math.cos(a)*(r+58),ly=cy+Math.sin(a)*(r+36);wrapLabel(ctx,labels[i],lx,ly,135,12)}
+ ctx.beginPath();vals.forEach((v,i)=>{let a=-Math.PI/2+i*2*Math.PI/n,rr=r*v/25,x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();ctx.fillStyle='rgba(204,233,127,.75)';ctx.fill();ctx.strokeStyle='#002855';ctx.lineWidth=3;ctx.stroke();vals.forEach((v,i)=>{let a=-Math.PI/2+i*2*Math.PI/n,rr=r*v/25,x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;ctx.fillStyle='#002855';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill()})}
+function wrapLabel(ctx,text,x,y,maxWidth,lineHeight){const words=text.split(' ');let line='',lines=[];words.forEach(word=>{const test=line+word+' ';if(ctx.measureText(test).width>maxWidth&&line){lines.push(line.trim());line=word+' '}else line=test});lines.push(line.trim());lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight))}
+function downloadResult(){const s=scores(),c=document.createElement('canvas');c.width=1200;c.height=900;const ctx=c.getContext('2d');ctx.fillStyle='#eef1f8';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#002855';ctx.fillRect(0,0,c.width,110);ctx.fillStyle='#ffffff';ctx.font='bold 42px Arial';ctx.fillText('PRAXI',55,70);ctx.font='bold 30px Arial';ctx.fillText('Mattering: il mio risultato',300,68);ctx.fillStyle='#002855';ctx.font='bold 34px Arial';ctx.fillText('Il mio profilo',55,175);let y=235;Object.entries(s).forEach(([k,v])=>{ctx.font='bold 24px Arial';ctx.fillText(k,55,y);ctx.textAlign='right';ctx.fillText(v+'/25',555,y);ctx.textAlign='left';ctx.fillStyle='#ffffff';ctx.fillRect(55,y+15,500,24);ctx.fillStyle='#cce97f';ctx.fillRect(55,y+15,500*v/25,24);ctx.strokeStyle='#002855';ctx.strokeRect(55,y+15,500,24);ctx.fillStyle='#002855';y+=105});const rc=document.createElement('canvas');rc.width=600;rc.height=420;drawRadar(s,rc);ctx.drawImage(rc,590,175,570,399);ctx.font='bold 27px Arial';ctx.fillText('Punteggio complessivo: '+answers.reduce((a,b)=>a+b,0)+'/75',55,585);ctx.font='20px Arial';ctx.fillText('Una base di riflessione da approfondire con il Trainer.',55,630);ctx.font='16px Arial';ctx.fillText('Fonte: Zach Mercurio (2025), Harvard Business Review.',55,835);const a=document.createElement('a');a.download='risultato-mattering.png';a.href=c.toDataURL('image/png');a.click()}
+$('startBtn').onclick=()=>{show('quiz');render()};$('nextBtn').onclick=next;$('backBtn').onclick=()=>{if(current>0){current--;render()}};$('restartBtn').onclick=()=>{current=0;answers.fill(null);show('intro')};$('downloadBtn').onclick=downloadResult;
+</script>
+</body>
+</html>
